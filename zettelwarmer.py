@@ -4,7 +4,7 @@ import pickle
 import subprocess
 import sys
 from argparse import ArgumentParser
-
+from math import sqrt, ceil, floor
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -16,22 +16,27 @@ NOW = datetime.datetime.now()
 
 
 def plot_age_heatmap(ages_mins):
-    """
-    Only qualitative, since entries can repeat themselves. This is due to
-    forcing the heatmap into a specific aspect ratio and padding the data
-    with np.resize
-    """
-    VIS_WIDTH = 16
-    VIS_HEIGHT = 9
-    x = int(np.ceil(np.sqrt(len(ages_mins) / (VIS_HEIGHT * VIS_WIDTH))))
-    padded_ages_mins = np.resize([*ages_mins], VIS_HEIGHT * VIS_WIDTH * x * x)
+    aspect_ratio = 16 / 9
+    # Result of minimizing number of rows for min||nrows^2 * ncols - len||_2^2
+    # Could be improved by cleverly chosing if we ceil rows or cols, depending
+    # on which yields better coverage (this is safe option).
+    num_rows = ceil(sqrt(len(ages_mins) * aspect_ratio + 4) / aspect_ratio)
+    num_cols = ceil(aspect_ratio * num_rows)
+
+    padded_len = num_cols * num_rows
+    padded_ages_mins = np.pad(
+        [*ages_mins],
+        (0, padded_len - len(ages_mins)),
+        "constant",
+        constant_values=np.nan,
+    )
     padded_ages_days = padded_ages_mins / (60 * 24)
 
     fig, ax = plt.subplots()
     ax.tick_params(left=False, bottom=False, labelbottom=False, labelleft=False)
     ax.set_title("Time Since Last Visit To Zettel [Days]")
 
-    im = ax.imshow(np.reshape([padded_ages_days], (VIS_HEIGHT * x, VIS_WIDTH * x)))
+    im = ax.imshow(np.reshape([padded_ages_days], (num_rows, num_cols)))
     cax = make_axes_locatable(ax).append_axes("right", size="5%", pad=0.1)
     fig.colorbar(im, cax=cax)
     fig.tight_layout()
