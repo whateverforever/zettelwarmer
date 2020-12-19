@@ -6,6 +6,11 @@
 > Gives more weight to Zettels that haven't been seen (by this tool) in a while. The older the
 > Zettel, the more probable it will be picked.
 
+## Usage
+
+Put it somewhere in your path, or make a shell alias to use it with your favorite flags.
+I added a reminder to my `/etc/motd` to warm up my Zettels once in a while.
+
 ```
 (base) ➜  ~ python zettelwarmer.py --help
 usage: zettelwarmer.py [-h] [-f FOLDER] [-p PICKLENAME] [-n NUMZETTELS]
