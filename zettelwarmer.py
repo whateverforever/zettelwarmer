@@ -4,7 +4,8 @@ import pickle
 import subprocess
 import sys
 from argparse import ArgumentParser
-from math import sqrt, ceil, floor
+from math import ceil, sqrt
+
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -19,7 +20,7 @@ def plot_age_heatmap(ages_mins):
     aspect_ratio = 16 / 9
     # Result of minimizing number of rows for min||nrows^2 * ncols - len||_2^2
     # Could be improved by cleverly chosing if we ceil rows or cols, depending
-    # on which yields better coverage (this is safe option).
+    #  on which yields better coverage (this is safe option).
     num_rows = ceil(sqrt(len(ages_mins) * aspect_ratio + 4) / aspect_ratio)
     num_cols = ceil(aspect_ratio * num_rows)
 
@@ -89,9 +90,12 @@ def main(folder, visualize, interactive, numzettels, picklename, suffixes):
     ]
 
     if not os.path.isfile(picklename):
-        print("Couldn't find zettelwarmer database at {}. Making new one.".format(
-            os.path.realpath(picklename)
-        ), file=sys.stderr)
+        print(
+            "Couldn't find zettelwarmer database at {}. Making new one.".format(
+                os.path.realpath(picklename)
+            ),
+            file=sys.stderr,
+        )
         with open(picklename, "wb+") as fh:
             zettel_dates = {}
             age_in_mins = {}
@@ -123,16 +127,16 @@ def main(folder, visualize, interactive, numzettels, picklename, suffixes):
     if visualize:
         plot_age_heatmap(ages)
 
-    open_files = True
+    open_and_update_files = True
     if interactive:
         print("Today's Zettels:")
         for zett in sample_zettels:
             print("  -", zett)
 
         user_input = input("Do you wanna open the files?")
-        open_files = (user_input == "") or (user_input.lower() == "y")
+        open_and_update_files = (user_input == "") or (user_input.lower() == "y")
 
-    if open_files:
+    if open_and_update_files:
         for zettel in sample_zettels:
             zettel_dates[zettel] = datetime.datetime.now()
             subprocess.run(["open", zettel])
