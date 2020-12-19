@@ -48,6 +48,36 @@ def get_file_suffix(filepath):
     return suffix
 
 
+def get_selection_probabilities(ages, importance_function="linear"):
+    """
+    Returns the probability of a Zettel being selected. This is proportional
+    to the Zettels age.
+
+    If importance_function == linear, that means if a Zettel is twice as old as another,
+    it is also twice as likely to be picked.
+
+    If importance_function == quadratic, that means a Zettel twice as old as another is
+    four times as likely to be picked. This leads to faster getting to know the old ones.
+
+    If importance_function == log, that means a Zettel twice as old as another is only
+    a little bit more likely to be opened for review. This is kind of like having a
+    uniform probability of picking notes, with the exception of new notes.
+    """
+    ages = np.array(ages)
+
+    if importance_function == "linear":
+        items_weighted = ages
+    elif importance_function == "quadratic":
+        items_weighted = np.power(ages, 2)
+    elif importance_function == "log":
+        items_weighted = np.log(ages)
+    else:
+        raise LookupError(f"Unknown importance function: {importance_function}")
+
+    probabilities = items_weighted / np.sum(items_weighted)
+    return probabilities
+
+
 def main(folder, visualize, interactive, numzettels, picklename, suffixes):
     os.chdir(folder)
 
@@ -83,8 +113,9 @@ def main(folder, visualize, interactive, numzettels, picklename, suffixes):
             age_in_mins[zett] = oldest_age
 
     ages = np.array([age_in_mins[zett] for zett in zettels])
-    total_age = np.sum(ages)
-    selection_probabilities = ages / total_age
+    selection_probabilities = get_selection_probabilities(
+        ages, importance_function="quadratic"
+    )
     sample_zettels = np.random.choice(
         zettels, size=numzettels, replace=False, p=selection_probabilities
     )
