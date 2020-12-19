@@ -67,15 +67,15 @@ def get_selection_probabilities(ages, importance_function="linear"):
     ages = np.array(ages)
 
     if importance_function == "linear":
-        items_weighted = ages
+        ages_weighted = ages
     elif importance_function == "quadratic":
-        items_weighted = np.power(ages, 2)
+        ages_weighted = np.power(ages, 2)
     elif importance_function == "log":
-        items_weighted = np.log(ages)
+        ages_weighted = np.log(ages + 1) # age could be below 1
     else:
         raise LookupError(f"Unknown importance function: {importance_function}")
 
-    probabilities = items_weighted / np.sum(items_weighted)
+    probabilities = ages_weighted / np.sum(ages_weighted)
     return probabilities
 
 
