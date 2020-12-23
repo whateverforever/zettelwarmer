@@ -79,7 +79,10 @@ def get_selection_probabilities(ages, importance_function="linear"):
     return probabilities
 
 
-def main(folder, visualize, interactive, numzettels, picklename, suffixes):
+def main(folder, visualize, interactive, numzettels, picklename, suffixes, visualize_only):
+    if visualize_only:
+        visualize = True
+
     os.chdir(folder)
 
     zettels = os.listdir()
@@ -136,7 +139,7 @@ def main(folder, visualize, interactive, numzettels, picklename, suffixes):
         user_input = input("Do you wanna open the files?")
         open_and_update_files = (user_input == "") or (user_input.lower() == "y")
 
-    if open_and_update_files:
+    if not visualize_only and open_and_update_files:
         for zettel in sample_zettels:
             zettel_dates[zettel] = datetime.datetime.now()
             subprocess.run(["open", zettel])
@@ -185,6 +188,9 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "-v", "--visualize", help="Show a heatmap of Zettel ages", action="store_true",
+    )
+    parser.add_argument(
+        "-vo", "--visualize-only", help="Do not open or modify anything, only show the heatmap", action="store_true"
     )
 
     args = parser.parse_args()
