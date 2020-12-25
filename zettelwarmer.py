@@ -1,4 +1,5 @@
 import datetime
+from functools import total_ordering
 import os
 import pickle
 import subprocess
@@ -31,11 +32,11 @@ def plot_age_heatmap(ages_mins):
         "constant",
         constant_values=np.nan,
     )
-    padded_ages_days = padded_ages_mins / (60 * 24)
+    padded_ages_days = np.round(padded_ages_mins / (60 * 24))
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(num="All Your Zettels and Their Age")
     ax.tick_params(left=False, bottom=False, labelbottom=False, labelleft=False)
-    ax.set_title("Time Since Last Visit To Zettel [Days]")
+    ax.set_title("Days Since Last Visit To Zettel")
 
     im = ax.imshow(np.reshape([padded_ages_days], (num_rows, num_cols)))
     cax = make_axes_locatable(ax).append_axes("right", size="5%", pad=0.1)
@@ -71,15 +72,20 @@ def get_selection_probabilities(ages, importance_function="linear"):
     elif importance_function == "quadratic":
         ages_weighted = np.power(ages, 2)
     elif importance_function == "log":
-        ages_weighted = np.log(ages + 1) # age could be below 1
+        ages_weighted = np.log(ages + 1)  # age could be below 1
     else:
         raise LookupError(f"Unknown importance function: {importance_function}")
 
-    probabilities = ages_weighted / np.sum(ages_weighted)
-    return probabilities
+    total_age = np.sum(ages_weighted)
+    if total_age == 0:
+        return np.ones_like(ages_weighted)
+
+    return ages_weighted / total_age
 
 
-def main(folder, visualize, interactive, numzettels, picklename, suffixes, visualize_only):
+def main(
+    folder, visualize, interactive, numzettels, picklename, suffixes, visualize_only
+):
     if visualize_only:
         visualize = True
 
@@ -190,7 +196,10 @@ if __name__ == "__main__":
         "-v", "--visualize", help="Show a heatmap of Zettel ages", action="store_true",
     )
     parser.add_argument(
-        "-vo", "--visualize-only", help="Do not open or modify anything, only show the heatmap", action="store_true"
+        "-vo",
+        "--visualize-only",
+        help="Do not open or modify anything, only show the heatmap",
+        action="store_true",
     )
 
     args = parser.parse_args()

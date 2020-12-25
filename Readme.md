@@ -6,6 +6,8 @@
 > Gives more weight to Zettels that haven't been seen (by this tool) in a while. The older the
 > Zettel, the more probable it will be picked.
 
+![Screenshot of the heatmap of Zettel ages](screenshot.png)
+
 ## Usage
 
 Put it somewhere in your path, or make a shell alias to use it with your favorite flags.
@@ -41,3 +43,7 @@ optional arguments:
 As of now, it's specific to macOS by using the built-in `open` command. This command is used
 to launch a markdown viewer to open the Zettels. This also requires you to have a markdown viewer
 like Typora or MacDown setup as the standard tool to open markdown files.
+
+## Feature Ideas
+
+- [ ] Calculate how long it will take until all (or say 90%) of notes are "warm" (i.e. not older than X)
