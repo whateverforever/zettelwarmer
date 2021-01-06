@@ -34,7 +34,9 @@ def plot_age_heatmap(ages_mins):
     )
     padded_ages_days = np.round(padded_ages_mins / (60 * 24))
 
-    fig, ax = plt.subplots(num="All Your Zettels and Their Age")
+    fig, ax = plt.subplots(
+        num=f"{len(ages_mins)} Zettels, Median Age {np.median(ages_mins/(60*24)):.0f} days."
+    )
     ax.tick_params(left=False, bottom=False, labelbottom=False, labelleft=False)
     ax.set_title("Days Since Last Visit To Zettel")
 
@@ -97,6 +99,9 @@ def main(
         for zett in zettels
         if os.path.isfile(zett) and get_file_suffix(zett) in suffixes
     ]
+
+    if numzettels > len(zettels):
+        numzettels = len(zettels)
 
     if not os.path.isfile(picklename):
         print(
