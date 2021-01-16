@@ -40,7 +40,9 @@ def plot_age_heatmap(ages_mins):
     ax.tick_params(left=False, bottom=False, labelbottom=False, labelleft=False)
     ax.set_title("Days Since Last Visit To Zettel")
 
-    im = ax.imshow(np.reshape([padded_ages_days], (num_rows, num_cols)))
+    im = ax.imshow(
+        np.reshape([padded_ages_days], (num_rows, num_cols)), cmap="plasma_r"
+    )
     cax = make_axes_locatable(ax).append_axes("right", size="5%", pad=0.1)
     fig.colorbar(im, cax=cax)
     fig.tight_layout()
@@ -117,6 +119,12 @@ def main(
     else:
         with open(picklename, "rb") as fh:
             zettel_dates = pickle.load(fh)
+            zettel_dates = {
+                zett_name: zett_date
+                for zett_name, zett_date in zettel_dates.items()
+                if zett_name in zettels
+            }
+            
             age_in_mins = {
                 zettel: (NOW - last_opened).total_seconds() // 60
                 for zettel, last_opened in zettel_dates.items()
