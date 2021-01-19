@@ -1,5 +1,4 @@
 import datetime
-from functools import total_ordering
 import os
 import pickle
 import subprocess
@@ -10,8 +9,6 @@ from math import ceil, sqrt
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-
-# Issues: Age 0 gibt ärger mit probability = NaN, only when total age 0
 
 plt.rcParams["toolbar"] = "None"
 NOW = datetime.datetime.now()
@@ -88,7 +85,14 @@ def get_selection_probabilities(ages, importance_function="linear"):
 
 
 def main(
-    folder, visualize, interactive, numzettels, picklename, suffixes, visualize_only
+    folder,
+    visualize,
+    interactive,
+    numzettels,
+    picklename,
+    suffixes,
+    visualize_only,
+    importance_fun,
 ):
     if visualize_only:
         visualize = True
@@ -124,7 +128,7 @@ def main(
                 for zett_name, zett_date in zettel_dates.items()
                 if zett_name in zettels
             }
-            
+
             age_in_mins = {
                 zettel: (NOW - last_opened).total_seconds() // 60
                 for zettel, last_opened in zettel_dates.items()
@@ -140,7 +144,7 @@ def main(
 
     ages = np.array([age_in_mins[zett] for zett in zettels])
     selection_probabilities = get_selection_probabilities(
-        ages, importance_function="quadratic"
+        ages, importance_function=importance_fun
     )
     sample_zettels = np.random.choice(
         zettels, size=numzettels, replace=False, p=selection_probabilities
@@ -180,12 +184,6 @@ if __name__ == "__main__":
         default=".",
     )
     parser.add_argument(
-        "-p",
-        "--picklename",
-        help="Name of the pickle file to save file ages into. Will be saved in the Zettel folder.",
-        default="zettelwarmer.pickle",
-    )
-    parser.add_argument(
         "-n",
         "--numzettels",
         help="Number of Zettels to pick and open.",
@@ -193,11 +191,23 @@ if __name__ == "__main__":
         type=int,
     )
     parser.add_argument(
+        "-if",
+        "--importance-fun",
+        help="Function of age, used to weight note-picking probability. Possible values are linear, quadratic, log",
+        default="quadratic",
+    )
+    parser.add_argument(
         "-s",
         "--suffixes",
         help="List of valid suffixes to consider as Zettel files. Defaults to .md",
         nargs="+",
         default=[".md"],
+    )
+    parser.add_argument(
+        "-p",
+        "--picklename",
+        help="Name of the pickle file to save file ages into. Will be saved in the Zettel folder.",
+        default="zettelwarmer.pickle",
     )
     parser.add_argument(
         "-i",
