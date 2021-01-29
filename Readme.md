@@ -5,6 +5,8 @@
 >
 > Gives more weight to Zettels that haven't been seen (by this tool) in a while. The older the
 > Zettel, the more probable it will be picked. See Andy Matuschak's [Evergreen note maintenance approximates spaced repetition](https://notes.andymatuschak.org/z2HUE4ABbQjUNjrNemvkTCsLa1LPDRuwh1tXC?stackedNotes=z6yfTwYekzvBkVjeH7WBUrSAJhyGTMYDAyYW7).
+>
+> Also see [zettelcon](https://github.com/whateverforever/zettelcon) for automatic backlink creation.
 
 ![Screenshot of the heatmap of Zettel ages](screenshot.png)
 
