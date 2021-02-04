@@ -13,7 +13,11 @@
 ## Usage
 
 Put it somewhere in your path, or make a shell alias to use it with your favorite flags.
-I added a reminder to my `/etc/motd` to warm up my Zettels once in a while.
+I added a reminder to my `/etc/motd` to warm up my Zettels once in a while, and do it using this alias:
+
+```
+alias heat-zettels="python /...path.../zettelwarmer.py -v -f /...path.../Zettels/ -n 6"
+```
 
 ```
 (base) ➜  ~ python zettelwarmer.py --help
