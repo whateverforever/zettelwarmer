@@ -22,8 +22,7 @@ alias heat-zettels="python /...path.../zettelwarmer.py -v -f /...path.../Zettels
 ```
 (base) ➜  ~ python zettelwarmer.py --help
 usage: zettelwarmer.py [-h] [-f FOLDER] [-n NUMZETTELS] [-if IMPORTANCE_FUN]
-                       [-s SUFFIXES [SUFFIXES ...]] [-p PICKLENAME] [-i] [-v]
-                       [-vo]
+                       [-s SUFFIXES [SUFFIXES ...]] [-p PICKLENAME] [-vo]
 
 Tool to revisit random Zettels from your collection. Gives more weight to old
 Zettels that you haven't seen in a while.
@@ -45,10 +44,8 @@ optional arguments:
   -p PICKLENAME, --picklename PICKLENAME
                         Name of the pickle file to save file ages into. Will
                         be saved in the Zettel folder.
-  -i, --interactive     Print stuff and ask if files should be opened.
-  -v, --visualize       Show a heatmap of Zettel ages
   -vo, --visualize-only
-                        Do not open or modify anything, only show the heatmap
+                        Do not open or modify anything, only show the heatmap.
 ```
 
 ## Requirements

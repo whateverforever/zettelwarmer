@@ -32,8 +32,9 @@ def plot_age_heatmap(ages_mins):
     padded_ages_days = np.round(padded_ages_mins / (60 * 24))
 
     fig, ax = plt.subplots(
-        num=f"{len(ages_mins)} Zettels, Median Age {np.median(ages_mins/(60*24)):.0f} days."
+        num=f"{len(ages_mins)} Zettels, Median Age {np.median(ages_mins/(60*24)):.0f} days.",
     )
+
     ax.tick_params(left=False, bottom=False, labelbottom=False, labelleft=False)
     ax.set_title("Days Since Last Visit To Zettel")
 
@@ -85,18 +86,8 @@ def get_selection_probabilities(ages, importance_function="linear"):
 
 
 def main(
-    folder,
-    visualize,
-    interactive,
-    numzettels,
-    picklename,
-    suffixes,
-    visualize_only,
-    importance_fun,
+    folder, numzettels, picklename, suffixes, visualize_only, importance_fun,
 ):
-    if visualize_only:
-        visualize = True
-
     os.chdir(folder)
 
     zettels = os.listdir()
@@ -109,18 +100,7 @@ def main(
     if numzettels > len(zettels):
         numzettels = len(zettels)
 
-    if not os.path.isfile(picklename):
-        print(
-            "Couldn't find zettelwarmer database at {}. Making new one.".format(
-                os.path.realpath(picklename)
-            ),
-            file=sys.stderr,
-        )
-        with open(picklename, "wb+") as fh:
-            zettel_dates = {}
-            age_in_mins = {}
-            pickle.dump(zettel_dates, fh)
-    else:
+    if os.path.isfile(picklename):
         with open(picklename, "rb") as fh:
             zettel_dates = pickle.load(fh)
             zettel_dates = {
@@ -133,6 +113,17 @@ def main(
                 zettel: (NOW - last_opened).total_seconds() // 60
                 for zettel, last_opened in zettel_dates.items()
             }
+    else:
+        print(
+            "Couldn't find zettelwarmer database at {}. Making new one.".format(
+                os.path.realpath(picklename)
+            ),
+            file=sys.stderr,
+        )
+        with open(picklename, "wb+") as fh:
+            zettel_dates = {}
+            age_in_mins = {}
+            pickle.dump(zettel_dates, fh)
 
     oldest_age = -1
     if len(age_in_mins.values()) > 0:
@@ -150,27 +141,18 @@ def main(
         zettels, size=numzettels, replace=False, p=selection_probabilities
     )
 
-    if visualize:
-        plot_age_heatmap(ages)
+    plot_age_heatmap(ages)
 
-    open_and_update_files = True
-    if interactive:
-        print("Today's Zettels:")
-        for zett in sample_zettels:
-            print("  -", zett)
-
-        user_input = input("Do you wanna open the files?")
-        open_and_update_files = (user_input == "") or (user_input.lower() == "y")
-
-    if not visualize_only and open_and_update_files:
-        for zettel in sample_zettels:
-            zettel_dates[zettel] = datetime.datetime.now()
-            subprocess.run(["open", zettel])
-
-        with open(picklename, "wb+") as fh:
-            pickle.dump(zettel_dates, fh)
-    else:
+    if visualize_only:
         print("Ok, not opening anything...")
+        return
+
+    for zettel in sample_zettels:
+        zettel_dates[zettel] = datetime.datetime.now()
+        subprocess.run(["open", zettel])
+
+    with open(picklename, "wb+") as fh:
+        pickle.dump(zettel_dates, fh)
 
 
 if __name__ == "__main__":
@@ -210,18 +192,9 @@ if __name__ == "__main__":
         default="zettelwarmer.pickle",
     )
     parser.add_argument(
-        "-i",
-        "--interactive",
-        help="Print stuff and ask if files should be opened.",
-        action="store_true",
-    )
-    parser.add_argument(
-        "-v", "--visualize", help="Show a heatmap of Zettel ages", action="store_true",
-    )
-    parser.add_argument(
         "-vo",
         "--visualize-only",
-        help="Do not open or modify anything, only show the heatmap",
+        help="Do not open or modify anything, only show the heatmap.",
         action="store_true",
     )
 
