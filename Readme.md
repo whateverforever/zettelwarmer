@@ -16,7 +16,8 @@ Put it somewhere in your path, or make a shell alias to use it with your favorit
 I added a reminder to my `/etc/motd` to warm up my Zettels once in a while, and do it using this alias:
 
 ```
-alias heat-zettels="python /...path.../zettelwarmer.py -v -f /...path.../Zettels/ -n 6"
+alias heat-zettels="python /...path.../zettelwarmer.py --folder /...path.../Zettels/ --numzettels 6"
+alias show-zettels="python /...path.../zettelwarmer.py --folder /...path.../Zettels/ --visualize-only
 ```
 
 ```
