@@ -17,7 +17,7 @@ I added a reminder to my `/etc/motd` to warm up my Zettels once in a while, and 
 
 ```
 alias heat-zettels="python /...path.../zettelwarmer.py --folder /...path.../Zettels/ --numzettels 6"
-alias show-zettels="python /...path.../zettelwarmer.py --folder /...path.../Zettels/ --visualize-only
+alias show-zettels="python /...path.../zettelwarmer.py --folder /...path.../Zettels/ --visualize-only"
 ```
 
 ```
