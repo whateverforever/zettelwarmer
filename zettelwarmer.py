@@ -52,7 +52,7 @@ def get_file_suffix(filepath):
     return suffix
 
 
-def get_selection_probabilities(ages, importance_function="linear"):
+def get_selection_probabilities(ages, importance_function):
     """
     Returns the probability of a Zettel being selected. This is proportional
     to the Zettels age.
