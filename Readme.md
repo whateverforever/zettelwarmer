@@ -8,7 +8,7 @@
 >
 > Also see [zettelcon](https://github.com/whateverforever/zettelcon) for automatic backlink creation.
 
-![Screenshot of the heatmap of Zettel ages](screenshot.png)
+![Screenshot of the heatmap of Zettel ages and subsequently opened zettels](screenshot.png)
 
 ## Usage
 
