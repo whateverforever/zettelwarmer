@@ -23,12 +23,10 @@ def plot_age_heatmap(ages_mins):
     num_cols = ceil(aspect_ratio * num_rows)
 
     padded_len = num_cols * num_rows
-    padded_ages_mins = np.pad(
-        [*ages_mins],
-        (0, padded_len - len(ages_mins)),
-        "constant",
-        constant_values=np.nan,
-    )
+    
+    padded_ages_mins = np.array([np.nan] * padded_len)
+    padded_ages_mins[0:len(ages_mins)] = ages_mins
+    
     padded_ages_days = np.round(padded_ages_mins / (60 * 24))
 
     fig, ax = plt.subplots(
