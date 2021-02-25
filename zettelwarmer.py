@@ -23,10 +23,10 @@ def plot_age_heatmap(ages_mins):
     num_cols = ceil(aspect_ratio * num_rows)
 
     padded_len = num_cols * num_rows
-    
+
     padded_ages_mins = np.array([np.nan] * padded_len)
-    padded_ages_mins[0:len(ages_mins)] = ages_mins
-    
+    padded_ages_mins[0 : len(ages_mins)] = ages_mins
+
     padded_ages_days = np.round(padded_ages_mins / (60 * 24))
 
     fig, ax = plt.subplots(
@@ -37,7 +37,7 @@ def plot_age_heatmap(ages_mins):
     ax.set_title("Days Since Last Visit To Zettel")
 
     im = ax.imshow(
-        np.reshape([padded_ages_days], (num_rows, num_cols)), cmap="plasma_r"
+        np.reshape([padded_ages_days], (num_rows, num_cols)), cmap="plasma_r",
     )
     cax = make_axes_locatable(ax).append_axes("right", size="5%", pad=0.1)
     fig.colorbar(im, cax=cax)
@@ -135,6 +135,8 @@ def main(
     selection_probabilities = get_selection_probabilities(
         ages, importance_function=importance_fun
     )
+    selection_probabilities /= np.sum(selection_probabilities)
+
     sample_zettels = np.random.choice(
         zettels, size=numzettels, replace=False, p=selection_probabilities
     )
