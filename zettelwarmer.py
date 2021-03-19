@@ -1,6 +1,7 @@
 import datetime
 import os
 import pickle
+import platform
 import subprocess
 import sys
 from argparse import ArgumentParser
@@ -147,9 +148,19 @@ def main(
         print("Ok, not opening anything...")
         return
 
+    if platform.system() == "Darwin":
+        open_cmd = "open"
+    elif platform.system() == "Linux":
+        open_cmd = "xdg-open"
+    elif platform.system() == "Windows":
+        open_cmd = ""
+        print("You're apparently using windows. I don't know if the file opening works. Please tell me if it did (please make an issue on github).")
+    else:
+        raise OSError(f"Don't know how to open files for your operating system: {platform.system()}.")
+
     for zettel in sample_zettels:
         zettel_dates[zettel] = datetime.datetime.now()
-        subprocess.run(["open", zettel])
+        subprocess.run([open_cmd, zettel])
 
     with open(picklename, "wb+") as fh:
         pickle.dump(zettel_dates, fh)

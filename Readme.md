@@ -51,9 +51,8 @@ optional arguments:
 
 ## Requirements
 
-As of now, it's specific to macOS by using the built-in `open` command. This command is used
-to launch a markdown viewer to open the Zettels. This also requires you to have a markdown viewer
-like Typora or MacDown setup as the standard tool to open markdown files.
+~~As of now, it's specific to macOS by using the built-in `open` command.~~
+In theory, macOS, linux and windows should be supported. On macOS, `open` is used to display the note files, on linux it's `xdg-open`. Windows doesn't seem to have a dedicated open command. If you're using windows and it doesn't work, please contact me. These commands require you to have a markdown viewer like Typora or MacDown setup as the standard tool to open markdown files.
 
 ## Feature Ideas
 
