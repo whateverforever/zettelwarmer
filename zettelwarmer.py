@@ -5,7 +5,8 @@ import platform
 import subprocess
 import sys
 from argparse import ArgumentParser
-from math import ceil, sqrt
+from collections import Counter
+from math import ceil, floor, sqrt
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -20,8 +21,21 @@ def plot_age_heatmap(ages_mins):
     # Result of minimizing number of rows for min||nrows^2 * ncols - len||_2^2
     # Could be improved by cleverly chosing if we ceil rows or cols, depending
     #  on which yields better coverage (this is safe option).
-    num_rows = ceil(sqrt(len(ages_mins) * aspect_ratio + 4) / aspect_ratio)
-    num_cols = ceil(aspect_ratio * num_rows)
+    num_rows = sqrt(len(ages_mins) * aspect_ratio + 4) / aspect_ratio
+    num_cols = aspect_ratio * num_rows
+
+    rounding_ops = [(ceil, floor), (floor, ceil), (ceil, ceil)]
+
+    coverage_errors = [
+        row_op(num_rows) * col_op(num_cols) - len(ages_mins)
+        for row_op, col_op in rounding_ops
+    ]
+    coverage_errors_positive = [error for error in coverage_errors if error >= 0]
+    rounding_choice = np.argmin(coverage_errors_positive)
+
+    row_op, col_op = rounding_ops[rounding_choice]
+    num_rows = row_op(num_rows)
+    num_cols = col_op(num_cols)
 
     padded_len = num_cols * num_rows
 
@@ -30,8 +44,9 @@ def plot_age_heatmap(ages_mins):
 
     padded_ages_days = np.round(padded_ages_mins / (60 * 24))
 
+    mode = Counter(padded_ages_days).most_common(1)[0][0]
     fig, ax = plt.subplots(
-        num=f"{len(ages_mins)} Zettels, Median Age {np.median(ages_mins/(60*24)):.0f} days.",
+        num=f"{len(ages_mins)} Zettels - Median Age {np.median(ages_mins/(60*24)):.0f} days - Mode {mode:.0f} days",
     )
 
     ax.tick_params(left=False, bottom=False, labelbottom=False, labelleft=False)
