@@ -30,8 +30,8 @@ def plot_age_heatmap(ages_mins):
         row_op(num_rows) * col_op(num_cols) - len(ages_mins)
         for row_op, col_op in rounding_ops
     ]
-    coverage_errors_positive = [error for error in coverage_errors if error >= 0]
-    rounding_choice = np.argmin(coverage_errors_positive)
+    coverage_errors_positive = [error if error >= 0 else np.nan for error in coverage_errors]
+    rounding_choice = np.nanargmin(coverage_errors_positive)
 
     row_op, col_op = rounding_ops[rounding_choice]
     num_rows = row_op(num_rows)
